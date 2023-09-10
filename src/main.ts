@@ -30,7 +30,7 @@ function concatSearchString(input: FetchInput, query?: Record<string, string>) {
       input = input.toString()
       const search = keys.reduce((prev, next) => {
         // @ts-ignore
-        prev.push(`${next}=${options.query[next]}`)
+        prev.push(`${next}=${query[next]}`)
         return prev
       }, [] as string[])
       input = input.endsWith("?") ? input.concat(search.join("&")) : input.concat("?", search.join("&"))
