@@ -24,7 +24,7 @@ export type ExtraOptions = {
 };
 export type FetchCreateOptions = Omit<FetchOptions, "url">;
 export type RequestQuery = Record<string, any>;
-export type RequestDataOption = RequestInit["body"];
+export type RequestDataOption = RequestInit["body"] | RequestQuery;
 export type RequestOptions = Omit<RequestInit, 'signal'> & ExtraOptions;
 export type FetchOptions = RequestOptions & Fetchinterceptor;
 export type FetchOptionsOmit = Omit<FetchOptions, "method" | "query" | "body" | "url">;

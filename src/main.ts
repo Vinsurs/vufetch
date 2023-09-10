@@ -138,7 +138,7 @@ export function create(options?: FetchCreateOptions) {
   }
   fetchFn.post = <T = unknown>(input: FetchInput, data?: RequestDataOption,  options?: FetchOptionsOmit) => {
     options = options || {}
-    let body = data
+    let body: any = data
     if (isPlainObject(data)) {
       body = JSON.stringify(data)
     }
@@ -151,7 +151,7 @@ export function create(options?: FetchCreateOptions) {
   }
   fetchFn.put = <T = unknown>(input: FetchInput, data?: RequestDataOption,  options?: FetchOptionsOmit) => {
     options = options || {}
-    let body = data
+    let body: any = data
     if (isPlainObject(data)) {
       body = JSON.stringify(data)
     }
@@ -164,7 +164,7 @@ export function create(options?: FetchCreateOptions) {
   }
   fetchFn.delete = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    let body = data
+    let body: any = data
     if (isPlainObject(data)) {
       body = JSON.stringify(data)
     }
@@ -178,7 +178,7 @@ export function create(options?: FetchCreateOptions) {
   }
   fetchFn.patch = <T = unknown>(input: FetchInput, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    let body = data
+    let body: any = data
     if (isPlainObject(data)) {
       body = JSON.stringify(data)
     }
@@ -200,7 +200,7 @@ export function create(options?: FetchCreateOptions) {
   }
   fetchFn.trace = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    let body = data
+    let body: any = data
     if (isPlainObject(data)) {
       body = JSON.stringify(data)
     }
@@ -214,7 +214,7 @@ export function create(options?: FetchCreateOptions) {
   }
   fetchFn.options = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    let body = data
+    let body: any = data
     if (isPlainObject(data)) {
       body = JSON.stringify(data)
     }
@@ -228,7 +228,7 @@ export function create(options?: FetchCreateOptions) {
   }
   fetchFn.connect = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    let body = data
+    let body: any = data
     if (isPlainObject(data)) {
       body = JSON.stringify(data)
     }
