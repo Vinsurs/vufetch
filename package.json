@@ -1,0 +1,52 @@
+{
+  "name": "vufetch",
+  "description": "A fetch wrapper, supports timeout, interceptor and retry",
+  "private": false,
+  "version": "0.1.4",
+  "type": "module",
+  "author": {
+    "email": "2407232109@qq.com",
+    "name": "vinsurs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vinsurs/vufetch"
+  },
+  "bugs": {
+    "url": "https://github.com/vinsurs/vufetch/issues"
+  },
+  "keywords": [
+    "axios",
+    "ajax",
+    "fetch",
+    "vufetch",
+    "http"
+  ],
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "types": "./types/main.d.ts",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.es.js",
+      "default": "./dist/index.es.js",
+      "types": "./types/main.d.ts",
+      "browser": "./dist/index.umd.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "release": "pnpm run build && npm publish --access=public"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  }
+}
