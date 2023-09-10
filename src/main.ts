@@ -81,7 +81,7 @@ export function create(options?: FetchOptions) {
             config: fetchOptions as FetchOptions
           }
           if (onResponse && typeof onResponse === 'function') {
-            data = onResponse(data)
+            data = await onResponse(data)
           }
           resolve(data)
         } else {

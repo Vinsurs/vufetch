@@ -1,8 +1,8 @@
 export type FetchInput = string | URL;
 export type Fetchinterceptor = {
-    onRequest?: (requestOptions: RequestOptions) => RequestOptions;
+    onRequest?: (requestOptions: RequestOptions) => RequestOptions | Promise<RequestOptions>;
     onRequestError?: (requestError: FetchRequestError) => Promise<FetchRequestError>;
-    onResponse?: (response: FetchResponseData) => FetchResponseData;
+    onResponse?: (response: FetchResponseData) => FetchResponseData | Promise<FetchResponseData>;
     onResponseError?: (responseError: FetchResponseError) => Promise<FetchResponseError>;
 };
 export type ExtraOptions = {
@@ -23,7 +23,7 @@ export type ExtraOptions = {
 export type RequestOptions = Omit<RequestInit, 'signal'> & ExtraOptions;
 export type FetchOptions = RequestOptions & Fetchinterceptor;
 export type FetchOptionsOmit = Omit<FetchOptions, "method"> & {
-    query?: Record<string, string>;
+    query?: Record<string, any>;
 };
 export type FetchResponseData<T = any> = {
     data: T;
