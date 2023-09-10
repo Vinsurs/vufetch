@@ -4,9 +4,15 @@ import type {
   FetchResponseData,
   FetchResponseError,
   FetchRequestError,
-  FetchOptionsOmit
+  FetchOptionsOmit,
+  RequestQuery,
+  RequestDataOption,
+  FetchCreateOptions
 } from "./type"
 
+function isPlainObject(o: unknown) {
+  return Object.prototype.toString.call(o) === "[object Object]"
+}
 function mergeOptions(o: FetchOptions, p: FetchOptions): FetchOptions {
   o.headers = o.headers || {}
   if (o.headers instanceof Headers) {
@@ -38,21 +44,22 @@ function concatSearchString(input: FetchInput, query?: Record<string, string>) {
   }
   return input
 }
-export function create(options?: FetchOptions) {
+export function create(options?: FetchCreateOptions) {
   const supportedResponseType = ['json', 'text', 'blob', 'arrayBuffer', 'formData']
   options = Object.assign({
     timeout: 60000,
     retry: false,
-    responseType: 'json'
+    responseType: 'json',
+    query: {},
   }, options || {})
-  async function fetchFn<T = unknown>(input: FetchInput, fetchOptions?: FetchOptions) {
+  async function fetchFn<T = unknown>(fetchOptions: FetchOptions) {
     const abortController = new AbortController()
-    fetchOptions = fetchOptions || {}
     fetchOptions = mergeOptions(options as FetchOptions, fetchOptions as FetchOptions)
     if (fetchOptions.onRequest && typeof fetchOptions.onRequest === 'function') {
       fetchOptions = await fetchOptions.onRequest(fetchOptions)
     }
-    const { baseUrl, timeout, retry, responseType, onRequest, onRequestError, onResponse, onResponseError, ...fetchInit } = fetchOptions
+    const { url, baseUrl, query, timeout, retry, responseType, onRequest, onRequestError, onResponse, onResponseError, ...fetchInit } = fetchOptions
+    let input = concatSearchString(url, query)
     if (baseUrl) {
       input = new URL(input, baseUrl)
     }
@@ -99,7 +106,7 @@ export function create(options?: FetchOptions) {
       })
       .catch(async err => {
         if (retry) {
-          fetchFn<T>(input, {
+          fetchFn<T>({
             ...fetchOptions,
             retry: false
           })
@@ -120,85 +127,117 @@ export function create(options?: FetchOptions) {
       })
     })
   }
-  fetchFn.get = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.get = <T = unknown>(input: FetchInput, query?: RequestQuery, options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    return fetchFn<T>({
+      url: input,
       method: "GET",
-      ...fetchOptions
+      ...options,
+      query
     })
   }
-  fetchFn.post = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.post = <T = unknown>(input: FetchInput, data?: RequestDataOption,  options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    let body = data
+    if (isPlainObject(data)) {
+      body = JSON.stringify(data)
+    }
+    return fetchFn<T>({
+      url: input,
       method: "POST",
-      ...fetchOptions
+      ...options,
+      body
     })
   }
-  fetchFn.put = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.put = <T = unknown>(input: FetchInput, data?: RequestDataOption,  options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    let body = data
+    if (isPlainObject(data)) {
+      body = JSON.stringify(data)
+    }
+    return fetchFn<T>({
+      url: input,
       method: "PUT",
-      ...fetchOptions
+      ...options,
+      body
     })
   }
-  fetchFn.delete = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.delete = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    let body = data
+    if (isPlainObject(data)) {
+      body = JSON.stringify(data)
+    }
+    return fetchFn<T>({
+      url: input,
       method: "DELETE",
-      ...fetchOptions
+      ...options,
+      query,
+      body
     })
   }
-  fetchFn.patch = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.patch = <T = unknown>(input: FetchInput, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    let body = data
+    if (isPlainObject(data)) {
+      body = JSON.stringify(data)
+    }
+    return fetchFn<T>({
+      url: input,
       method: "PATCH",
-      ...fetchOptions
+      ...options,
+      body
     })
   }
-  fetchFn.head = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.head = <T = unknown>(input: FetchInput, query?: RequestQuery, options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    return fetchFn<T>({
+      url: input,
       method: "HEAD",
-      ...fetchOptions
+      ...options,
+      query
     })
   }
-  fetchFn.trace = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.trace = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    let body = data
+    if (isPlainObject(data)) {
+      body = JSON.stringify(data)
+    }
+    return fetchFn<T>({
+      url: input,
       method: "TRACE",
-      ...fetchOptions
+      ...options,
+      query,
+      body
     })
   }
-  fetchFn.options = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.options = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    let body = data
+    if (isPlainObject(data)) {
+      body = JSON.stringify(data)
+    }
+    return fetchFn<T>({
+      url: input,
       method: "OPTIONS",
-      ...fetchOptions
+      ...options,
+      query,
+      body
     })
   }
-  fetchFn.connect = <T = unknown>(input: FetchInput, options?: FetchOptionsOmit) => {
+  fetchFn.connect = <T = unknown>(input: FetchInput, query?: RequestQuery, data?: RequestDataOption, options?: FetchOptionsOmit) => {
     options = options || {}
-    const { query, ...fetchOptions } = options
-    input = concatSearchString(input, query)
-    return fetchFn<T>(input, {
+    let body = data
+    if (isPlainObject(data)) {
+      body = JSON.stringify(data)
+    }
+    return fetchFn<T>({
+      url: input,
       method: "CONNECT",
-      ...fetchOptions
+      ...options,
+      query,
+      body
     })
   }
   return fetchFn
